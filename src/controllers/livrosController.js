@@ -15,15 +15,30 @@ class LivroController {
       const id = req.params.id;
       
       livros.findById(id) 
-      .populate('autor', 'nome')
-      .populate('editora', 'nome')
-      .exec((err, livros) => {
-        if (err) {
-          res.status(400).send({ message: `${err.message} - ID do livro não encontrado` });
-        } else {
-          res.status(200).send(livros);
-        }
-      })
+        .populate('autor', 'nome')
+        .populate('editora', 'nome')
+        .exec((err, livros) => {
+          if (err) {
+            res.status(400).send({ message: `${err.message} - ID do livro não encontrado` });
+          } else {
+            res.status(200).send(livros);
+          }
+        })
+    }
+
+    static listarLivroPorEditora = (req, res) => {
+      const editora = req.query.editora;
+
+      livros.find({ "editora": editora }, {}) 
+        .populate('autor', 'nome')
+        .populate('editora', 'nome')
+        .exec((err, livros) => {
+          if (!err) {
+            res.status(200).send(livros);
+          } else {
+            res.status(500).send({ message: err.message });
+          }
+        })
     }
 
     static cadastrarLivro = (req, res) => {
